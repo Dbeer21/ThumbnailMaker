@@ -1,4 +1,5 @@
 //Programmed by Aaron Weiss 9/2/2017
+//Edited by Daniel Beer 9/22/2017
 
 import javax.swing.*;
 import java.awt.*;
@@ -45,11 +46,20 @@ public class ThumbnailMaker {
 
 	JComboBox player1Char, player1Color, player2Char, player2Color;
 	JTextField player1Name, player2Name;
+	JButton player1Check, player2Check;
+	JButton player1Drop, player2Drop;
 
 	JLabel previewIconLabel;
 	ImageIcon previewIcon;
 
 	JPanel previewPanel;
+	
+	String leftName = new String("");
+	String rightName = new String("");
+	ArrayList<String> leftPlayerChars = new ArrayList<>();
+	ArrayList<String> leftPlayerColors = new ArrayList<>();
+	ArrayList<String> rightPlayerChars = new ArrayList<>();
+	ArrayList<String> rightPlayerColors = new ArrayList<>();
 
 	public ThumbnailMaker() {
 
@@ -92,28 +102,35 @@ public class ThumbnailMaker {
 		player1Name = new JTextField(15);
 		player1Char = new JComboBox(characters);
 		player1Color = new JComboBox(colors);
-
+		player1Check = new JButton("Add");
+		player1Drop = new JButton("Remove Last Player");
+		
 		player1Panel.setLayout(new GridLayout(0,2));
 		player1Panel.add(player1Label);
 		player1Panel.add(player1Name);
 		player1Panel.add(player1Char);
 		player1Panel.add(player1Color);
+		player1Panel.add(player1Check);
+		player1Panel.add(player1Drop);
 
 		JPanel player2Panel = new JPanel();
 		JLabel player2Label = new JLabel("Player 2:");
 		player2Name = new JTextField(15);
 		player2Char = new JComboBox(characters);
 		player2Color = new JComboBox(colors);
+		player2Check = new JButton("Add");
+		player2Drop = new JButton("Remove Last Player");
 
 		player2Panel.setLayout(new GridLayout(0,2));
 		player2Panel.add(player2Label);
 		player2Panel.add(player2Name);
 		player2Panel.add(player2Char);
 		player2Panel.add(player2Color);
+		player2Panel.add(player2Check);
+		player2Panel.add(player2Drop);
+		
 
-
-
-		PropertyChangeListener updateImage = new PropertyChangeListener() {
+		/*PropertyChangeListener updateImage = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent e) {
 				updatePreview();
 			}
@@ -143,496 +160,578 @@ public class ThumbnailMaker {
 			  public void insertUpdate(DocumentEvent e) {
 				updatePreview();
 			  }
-		});
+		});*/
 
 		player1Char.addPropertyChangeListener(new PropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent e) {
-					String selection = (String)player1Char.getSelectedItem();
-					if(selection == player1Previous)
-						return;
+			public void propertyChange(PropertyChangeEvent e) {
+				String selection = (String)player1Char.getSelectedItem();
+				if(selection == player1Previous)
+					return;
 
-						player1Previous = selection;
-						player1Color.removeAllItems();
-						switch (selection) {
-							case "Bowser":
-								player1Color.addItem("Default");
-								player1Color.addItem("Red");
-								player1Color.addItem("Blue");
-								player1Color.addItem("Black");
+				player1Previous = selection;
+				player1Color.removeAllItems();
+				switch (selection) {
+					case "Bowser":
+						player1Color.addItem("Default");
+						player1Color.addItem("Red");
+						player1Color.addItem("Blue");
+						player1Color.addItem("Black");
 
-								player1Color.setSelectedIndex(0);
-							break;
-							case "Falcon":
-								player1Color.addItem("Default");
-								player1Color.addItem("Black");
-								player1Color.addItem("Red");
-								player1Color.addItem("White");
-								player1Color.addItem("Green");
-								player1Color.addItem("Blue");
+						player1Color.setSelectedIndex(0);
+					break;
+					case "Falcon":
+						player1Color.addItem("Default");
+						player1Color.addItem("Black");
+						player1Color.addItem("Red");
+						player1Color.addItem("White");
+						player1Color.addItem("Green");
+						player1Color.addItem("Blue");
 
-								player1Color.setSelectedIndex(0);
-							break;
-							case "DK":
-								player1Color.addItem("Default");
-								player1Color.addItem("Black");
-								player1Color.addItem("Red");
-								player1Color.addItem("Blue");
-								player1Color.addItem("Green");
+						player1Color.setSelectedIndex(0);
+					break;
+					case "DK":
+						player1Color.addItem("Default");
+						player1Color.addItem("Black");
+						player1Color.addItem("Red");
+						player1Color.addItem("Blue");
+						player1Color.addItem("Green");
 
-								player1Color.setSelectedIndex(0);
-							break;
-							case "Doc":
-								player1Color.addItem("Default");
-								player1Color.addItem("Red");
-								player1Color.addItem("Blue");
-								player1Color.addItem("Green");
-								player1Color.addItem("Black");
+						player1Color.setSelectedIndex(0);
+					break;
+					case "Doc":
+						player1Color.addItem("Default");
+						player1Color.addItem("Red");
+						player1Color.addItem("Blue");
+						player1Color.addItem("Green");
+						player1Color.addItem("Black");
 
-								player1Color.setSelectedIndex(0);
-								break;
-							case "Falco":
-								player1Color.addItem("Default");
-								player1Color.addItem("Red");
-								player1Color.addItem("Blue");
-								player1Color.addItem("Green");
+						player1Color.setSelectedIndex(0);
+						break;
+					case "Falco":
+						player1Color.addItem("Default");
+						player1Color.addItem("Red");
+						player1Color.addItem("Blue");
+						player1Color.addItem("Green");
 
-								player1Color.setSelectedIndex(0);
-								break;
-							case "Fox":
-								player1Color.addItem("Default");
-								player1Color.addItem("Red");
-								player1Color.addItem("Blue");
-								player1Color.addItem("Green");
+						player1Color.setSelectedIndex(0);
+						break;
+					case "Fox":
+						player1Color.addItem("Default");
+						player1Color.addItem("Red");
+						player1Color.addItem("Blue");
+						player1Color.addItem("Green");
 
-								player1Color.setSelectedIndex(0);
-								break;
-							case "Ganon":
-								player1Color.addItem("Default");
-								player1Color.addItem("Red");
-								player1Color.addItem("Blue");
-								player1Color.addItem("Green");
-								player1Color.addItem("Purple");
+						player1Color.setSelectedIndex(0);
+						break;
+					case "Ganon":
+						player1Color.addItem("Default");
+						player1Color.addItem("Red");
+						player1Color.addItem("Blue");
+						player1Color.addItem("Green");
+						player1Color.addItem("Purple");
 
-								player1Color.setSelectedIndex(0);
-								break;
-							case "Icies":
-								player1Color.addItem("Default");
-								player1Color.addItem("Green");
-								player1Color.addItem("Orange");
-								player1Color.addItem("Red");
+						player1Color.setSelectedIndex(0);
+						break;
+					case "Icies":
+						player1Color.addItem("Default");
+						player1Color.addItem("Green");
+						player1Color.addItem("Orange");
+						player1Color.addItem("Red");
 
-								player1Color.setSelectedIndex(0);
-								break;
-							case "Puff":
-								player1Color.addItem("Default");
-								player1Color.addItem("Red");
-								player1Color.addItem("Blue");
-								player1Color.addItem("Green");
-								player1Color.addItem("Yellow");
+						player1Color.setSelectedIndex(0);
+						break;
+					case "Puff":
+						player1Color.addItem("Default");
+						player1Color.addItem("Red");
+						player1Color.addItem("Blue");
+						player1Color.addItem("Green");
+						player1Color.addItem("Yellow");
 
-								player1Color.setSelectedIndex(0);
-								break;
-							case "Kirby":
-								player1Color.addItem("Default");
-								player1Color.addItem("Yellow");
-								player1Color.addItem("Blue");
-								player1Color.addItem("Red");
-								player1Color.addItem("Green");
-								player1Color.addItem("White");
+						player1Color.setSelectedIndex(0);
+						break;
+					case "Kirby":
+						player1Color.addItem("Default");
+						player1Color.addItem("Yellow");
+						player1Color.addItem("Blue");
+						player1Color.addItem("Red");
+						player1Color.addItem("Green");
+						player1Color.addItem("White");
 
-								player1Color.setSelectedIndex(0);
-								break;
-							case "Link":
-								player1Color.addItem("Default");
-								player1Color.addItem("Red");
-								player1Color.addItem("Blue");
-								player1Color.addItem("Black");
-								player1Color.addItem("White");
+						player1Color.setSelectedIndex(0);
+						break;
+					case "Link":
+						player1Color.addItem("Default");
+						player1Color.addItem("Red");
+						player1Color.addItem("Blue");
+						player1Color.addItem("Black");
+						player1Color.addItem("White");
 
-								player1Color.setSelectedIndex(0);
-								break;
-							case "Luigi":
-								player1Color.addItem("Default");
-								player1Color.addItem("White");
-								player1Color.addItem("Blue");
-								player1Color.addItem("Pink");
+						player1Color.setSelectedIndex(0);
+						break;
+					case "Luigi":
+						player1Color.addItem("Default");
+						player1Color.addItem("White");
+						player1Color.addItem("Blue");
+						player1Color.addItem("Pink");
 
-								player1Color.setSelectedIndex(0);
-								break;
-							case "Mario":
-								player1Color.addItem("Default");
-								player1Color.addItem("Yellow");
-								player1Color.addItem("Black");
-								player1Color.addItem("Blue");
-								player1Color.addItem("Green");
+						player1Color.setSelectedIndex(0);
+						break;
+					case "Mario":
+						player1Color.addItem("Default");
+						player1Color.addItem("Yellow");
+						player1Color.addItem("Black");
+						player1Color.addItem("Blue");
+						player1Color.addItem("Green");
 
-								player1Color.setSelectedIndex(0);
-								break;
-							case "Marth":
-								player1Color.addItem("Default");
-								player1Color.addItem("Red");
-								player1Color.addItem("Green");
-								player1Color.addItem("Black");
-								player1Color.addItem("White");
+						player1Color.setSelectedIndex(0);
+						break;
+					case "Marth":
+						player1Color.addItem("Default");
+						player1Color.addItem("Red");
+						player1Color.addItem("Green");
+						player1Color.addItem("Black");
+						player1Color.addItem("White");
 
-								player1Color.setSelectedIndex(0);
-								break;
-							case "Mewtwo":
-								player1Color.addItem("Default");
-								player1Color.addItem("Red");
-								player1Color.addItem("Blue");
-								player1Color.addItem("Green");
+						player1Color.setSelectedIndex(0);
+						break;
+					case "Mewtwo":
+						player1Color.addItem("Default");
+						player1Color.addItem("Red");
+						player1Color.addItem("Blue");
+						player1Color.addItem("Green");
 
-								player1Color.setSelectedIndex(0);
-								break;
-							case "GnW":
-								player1Color.addItem("Default");
-								player1Color.addItem("Red");
-								player1Color.addItem("Blue");
-								player1Color.addItem("Green");
+						player1Color.setSelectedIndex(0);
+						break;
+					case "GnW":
+						player1Color.addItem("Default");
+						player1Color.addItem("Red");
+						player1Color.addItem("Blue");
+						player1Color.addItem("Green");
 
-								player1Color.setSelectedIndex(0);
-								break;
-							case "Ness":
-								player1Color.addItem("Default");
-								player1Color.addItem("Yellow");
-								player1Color.addItem("Blue");
-								player1Color.addItem("Green");
+						player1Color.setSelectedIndex(0);
+						break;
+					case "Ness":
+						player1Color.addItem("Default");
+						player1Color.addItem("Yellow");
+						player1Color.addItem("Blue");
+						player1Color.addItem("Green");
 
-								player1Color.setSelectedIndex(0);
-								break;
-							case "Peach":
-								player1Color.addItem("Default");
-								player1Color.addItem("Yellow");
-								player1Color.addItem("White");
-								player1Color.addItem("Blue");
-								player1Color.addItem("Green");
+						player1Color.setSelectedIndex(0);
+						break;
+					case "Peach":
+						player1Color.addItem("Default");
+						player1Color.addItem("Yellow");
+						player1Color.addItem("White");
+						player1Color.addItem("Blue");
+						player1Color.addItem("Green");
 
-								player1Color.setSelectedIndex(0);
-								break;
-							case "Pichu":
-								player1Color.addItem("Default");
-								player1Color.addItem("Red");
-								player1Color.addItem("Blue");
-								player1Color.addItem("Green");
+						player1Color.setSelectedIndex(0);
+						break;
+					case "Pichu":
+						player1Color.addItem("Default");
+						player1Color.addItem("Red");
+						player1Color.addItem("Blue");
+						player1Color.addItem("Green");
 
-								player1Color.setSelectedIndex(0);
-								break;
-							case "Pikachu":
-								player1Color.addItem("Default");
-								player1Color.addItem("Red");
-								player1Color.addItem("Blue");
-								player1Color.addItem("Green");
+						player1Color.setSelectedIndex(0);
+						break;
+					case "Pikachu":
+						player1Color.addItem("Default");
+						player1Color.addItem("Red");
+						player1Color.addItem("Blue");
+						player1Color.addItem("Green");
 
-								player1Color.setSelectedIndex(0);
-								break;
-							case "Roy":
-								player1Color.addItem("Default");
-								player1Color.addItem("Red");
-								player1Color.addItem("Blue");
-								player1Color.addItem("Green");
-								player1Color.addItem("Yellow");
+						player1Color.setSelectedIndex(0);
+						break;
+					case "Roy":
+						player1Color.addItem("Default");
+						player1Color.addItem("Red");
+						player1Color.addItem("Blue");
+						player1Color.addItem("Green");
+						player1Color.addItem("Yellow");
 
-								player1Color.setSelectedIndex(0);
-								break;
-							case "Samus":
-								player1Color.addItem("Default");
-								player1Color.addItem("Pink");
-								player1Color.addItem("Black");
-								player1Color.addItem("Green");
-								player1Color.addItem("Purple");
+						player1Color.setSelectedIndex(0);
+						break;
+					case "Samus":
+						player1Color.addItem("Default");
+						player1Color.addItem("Pink");
+						player1Color.addItem("Black");
+						player1Color.addItem("Green");
+						player1Color.addItem("Purple");
 
-								player1Color.setSelectedIndex(0);
-								break;
-							case "Sheik":
-								player1Color.addItem("Default");
-								player1Color.addItem("Red");
-								player1Color.addItem("Blue");
-								player1Color.addItem("Green");
-								player1Color.addItem("White");
+						player1Color.setSelectedIndex(0);
+						break;
+					case "Sheik":
+						player1Color.addItem("Default");
+						player1Color.addItem("Red");
+						player1Color.addItem("Blue");
+						player1Color.addItem("Green");
+						player1Color.addItem("White");
 
-								player1Color.setSelectedIndex(0);
-								break;
-							case "Yoshi":
-								player1Color.addItem("Default");
-								player1Color.addItem("Red");
-								player1Color.addItem("Blue");
-								player1Color.addItem("Yellow");
-								player1Color.addItem("Pink");
-								player1Color.addItem("Cyan");
+						player1Color.setSelectedIndex(0);
+						break;
+					case "Yoshi":
+						player1Color.addItem("Default");
+						player1Color.addItem("Red");
+						player1Color.addItem("Blue");
+						player1Color.addItem("Yellow");
+						player1Color.addItem("Pink");
+						player1Color.addItem("Cyan");
 
-								player1Color.setSelectedIndex(0);
-								break;
-							case "YoungLink":
-								player1Color.addItem("Default");
-								player1Color.addItem("Red");
-								player1Color.addItem("Blue");
-								player1Color.addItem("White");
-								player1Color.addItem("Black");
+						player1Color.setSelectedIndex(0);
+						break;
+					case "YoungLink":
+						player1Color.addItem("Default");
+						player1Color.addItem("Red");
+						player1Color.addItem("Blue");
+						player1Color.addItem("White");
+						player1Color.addItem("Black");
 
-								player1Color.setSelectedIndex(0);
-								break;
-							case "Zelda":
-								player1Color.addItem("Default");
-								player1Color.addItem("Red");
-								player1Color.addItem("Blue");
-								player1Color.addItem("Green");
-								player1Color.addItem("White");
+						player1Color.setSelectedIndex(0);
+						break;
+					case "Zelda":
+						player1Color.addItem("Default");
+						player1Color.addItem("Red");
+						player1Color.addItem("Blue");
+						player1Color.addItem("Green");
+						player1Color.addItem("White");
 
-								player1Color.setSelectedIndex(0);
-								break;
-							default:
-								player1Color.addItem("--");
-								break;
-						}
-						updatePreview();
-					}
+						player1Color.setSelectedIndex(0);
+						break;
+					default:
+						player1Color.addItem("--");
+						break;
+				}
+				//updatePreview();
+			}
 		});
 
 		player2Char.addPropertyChangeListener(new PropertyChangeListener() {
-						public void propertyChange(PropertyChangeEvent e) {
-							String selection = (String)player2Char.getSelectedItem();
-							if(selection == player2Previous)
-								return;
+			public void propertyChange(PropertyChangeEvent e) {
+				String selection = (String)player2Char.getSelectedItem();
+				if(selection == player2Previous)
+					return;
 
-								player2Previous = selection;
-								player2Color.removeAllItems();
-								switch (selection) {
-									case "Bowser":
-										player2Color.addItem("Default");
-										player2Color.addItem("Red");
-										player2Color.addItem("Blue");
-										player2Color.addItem("Black");
+				player2Previous = selection;
+				player2Color.removeAllItems();
+				switch (selection) {
+					case "Bowser":
+						player2Color.addItem("Default");
+						player2Color.addItem("Red");
+						player2Color.addItem("Blue");
+						player2Color.addItem("Black");
 
-										player2Color.setSelectedIndex(0);
-									break;
-									case "Falcon":
-										player2Color.addItem("Default");
-										player2Color.addItem("Black");
-										player2Color.addItem("Red");
-										player2Color.addItem("White");
-										player2Color.addItem("Green");
-										player2Color.addItem("Blue");
+						player2Color.setSelectedIndex(0);
+					break;
+					case "Falcon":
+						player2Color.addItem("Default");
+						player2Color.addItem("Black");
+						player2Color.addItem("Red");
+						player2Color.addItem("White");
+						player2Color.addItem("Green");
+						player2Color.addItem("Blue");
 
-										player2Color.setSelectedIndex(0);
-									break;
-									case "DK":
-										player2Color.addItem("Default");
-										player2Color.addItem("Black");
-										player2Color.addItem("Red");
-										player2Color.addItem("Blue");
-										player2Color.addItem("Green");
+						player2Color.setSelectedIndex(0);
+					break;
+					case "DK":
+						player2Color.addItem("Default");
+						player2Color.addItem("Black");
+						player2Color.addItem("Red");
+						player2Color.addItem("Blue");
+						player2Color.addItem("Green");
 
-										player2Color.setSelectedIndex(0);
-									break;
-									case "Doc":
-										player2Color.addItem("Default");
-										player2Color.addItem("Red");
-										player2Color.addItem("Blue");
-										player2Color.addItem("Green");
-										player2Color.addItem("Black");
+						player2Color.setSelectedIndex(0);
+					break;
+					case "Doc":
+						player2Color.addItem("Default");
+						player2Color.addItem("Red");
+						player2Color.addItem("Blue");
+						player2Color.addItem("Green");
+						player2Color.addItem("Black");
 
-										player2Color.setSelectedIndex(0);
-										break;
-									case "Falco":
-										player2Color.addItem("Default");
-										player2Color.addItem("Red");
-										player2Color.addItem("Blue");
-										player2Color.addItem("Green");
+						player2Color.setSelectedIndex(0);
+						break;
+					case "Falco":
+						player2Color.addItem("Default");
+						player2Color.addItem("Red");
+						player2Color.addItem("Blue");
+						player2Color.addItem("Green");
 
-										player2Color.setSelectedIndex(0);
-										break;
-									case "Fox":
-										player2Color.addItem("Default");
-										player2Color.addItem("Red");
-										player2Color.addItem("Blue");
-										player2Color.addItem("Green");
+						player2Color.setSelectedIndex(0);
+						break;
+					case "Fox":
+						player2Color.addItem("Default");
+						player2Color.addItem("Red");
+						player2Color.addItem("Blue");
+						player2Color.addItem("Green");
 
-										player2Color.setSelectedIndex(0);
-										break;
-									case "Ganon":
-										player2Color.addItem("Default");
-										player2Color.addItem("Red");
-										player2Color.addItem("Blue");
-										player2Color.addItem("Green");
-										player2Color.addItem("Purple");
+						player2Color.setSelectedIndex(0);
+						break;
+					case "Ganon":
+						player2Color.addItem("Default");
+						player2Color.addItem("Red");
+						player2Color.addItem("Blue");
+						player2Color.addItem("Green");
+						player2Color.addItem("Purple");
 
-										player2Color.setSelectedIndex(0);
-										break;
-									case "Icies":
-										player2Color.addItem("Default");
-										player2Color.addItem("Green");
-										player2Color.addItem("Orange");
-										player2Color.addItem("Red");
+						player2Color.setSelectedIndex(0);
+						break;
+					case "Icies":
+						player2Color.addItem("Default");
+						player2Color.addItem("Green");
+						player2Color.addItem("Orange");
+						player2Color.addItem("Red");
 
-										player2Color.setSelectedIndex(0);
-										break;
-									case "Puff":
-										player2Color.addItem("Default");
-										player2Color.addItem("Red");
-										player2Color.addItem("Blue");
-										player2Color.addItem("Green");
-										player2Color.addItem("Yellow");
+						player2Color.setSelectedIndex(0);
+						break;
+					case "Puff":
+						player2Color.addItem("Default");
+						player2Color.addItem("Red");
+						player2Color.addItem("Blue");
+						player2Color.addItem("Green");
+						player2Color.addItem("Yellow");
 
-										player2Color.setSelectedIndex(0);
-										break;
-									case "Kirby":
-										player2Color.addItem("Default");
-										player2Color.addItem("Yellow");
-										player2Color.addItem("Blue");
-										player2Color.addItem("Red");
-										player2Color.addItem("Green");
-										player2Color.addItem("White");
+						player2Color.setSelectedIndex(0);
+						break;
+					case "Kirby":
+						player2Color.addItem("Default");
+						player2Color.addItem("Yellow");
+						player2Color.addItem("Blue");
+						player2Color.addItem("Red");
+						player2Color.addItem("Green");
+						player2Color.addItem("White");
 
-										player2Color.setSelectedIndex(0);
-										break;
-									case "Link":
-										player2Color.addItem("Default");
-										player2Color.addItem("Red");
-										player2Color.addItem("Blue");
-										player2Color.addItem("Black");
-										player2Color.addItem("White");
+						player2Color.setSelectedIndex(0);
+						break;
+					case "Link":
+						player2Color.addItem("Default");
+						player2Color.addItem("Red");
+						player2Color.addItem("Blue");
+						player2Color.addItem("Black");
+						player2Color.addItem("White");
 
-										player2Color.setSelectedIndex(0);
-										break;
-									case "Luigi":
-										player2Color.addItem("Default");
-										player2Color.addItem("White");
-										player2Color.addItem("Blue");
-										player2Color.addItem("Pink");
+						player2Color.setSelectedIndex(0);
+						break;
+					case "Luigi":
+						player2Color.addItem("Default");
+						player2Color.addItem("White");
+						player2Color.addItem("Blue");
+						player2Color.addItem("Pink");
 
-										player2Color.setSelectedIndex(0);
-										break;
-									case "Mario":
-										player2Color.addItem("Default");
-										player2Color.addItem("Yellow");
-										player2Color.addItem("Black");
-										player2Color.addItem("Blue");
-										player2Color.addItem("Green");
+						player2Color.setSelectedIndex(0);
+						break;
+					case "Mario":
+						player2Color.addItem("Default");
+						player2Color.addItem("Yellow");
+						player2Color.addItem("Black");
+						player2Color.addItem("Blue");
+						player2Color.addItem("Green");
 
-										player2Color.setSelectedIndex(0);
-										break;
-									case "Marth":
-										player2Color.addItem("Default");
-										player2Color.addItem("Red");
-										player2Color.addItem("Green");
-										player2Color.addItem("Black");
-										player2Color.addItem("White");
+						player2Color.setSelectedIndex(0);
+						break;
+					case "Marth":
+						player2Color.addItem("Default");
+						player2Color.addItem("Red");
+						player2Color.addItem("Green");
+						player2Color.addItem("Black");
+						player2Color.addItem("White");
 
-										player2Color.setSelectedIndex(0);
-										break;
-									case "Mewtwo":
-										player2Color.addItem("Default");
-										player2Color.addItem("Red");
-										player2Color.addItem("Blue");
-										player2Color.addItem("Green");
+						player2Color.setSelectedIndex(0);
+						break;
+					case "Mewtwo":
+						player2Color.addItem("Default");
+						player2Color.addItem("Red");
+						player2Color.addItem("Blue");
+						player2Color.addItem("Green");
 
-										player2Color.setSelectedIndex(0);
-										break;
-									case "GnW":
-										player2Color.addItem("Default");
-										player2Color.addItem("Red");
-										player2Color.addItem("Blue");
-										player2Color.addItem("Green");
+						player2Color.setSelectedIndex(0);
+						break;
+					case "GnW":
+						player2Color.addItem("Default");
+						player2Color.addItem("Red");
+						player2Color.addItem("Blue");
+						player2Color.addItem("Green");
 
-										player2Color.setSelectedIndex(0);
-										break;
-									case "Ness":
-										player2Color.addItem("Default");
-										player2Color.addItem("Yellow");
-										player2Color.addItem("Blue");
-										player2Color.addItem("Green");
+						player2Color.setSelectedIndex(0);
+						break;
+					case "Ness":
+						player2Color.addItem("Default");
+						player2Color.addItem("Yellow");
+						player2Color.addItem("Blue");
+						player2Color.addItem("Green");
 
-										player2Color.setSelectedIndex(0);
-										break;
-									case "Peach":
-										player2Color.addItem("Default");
-										player2Color.addItem("Yellow");
-										player2Color.addItem("White");
-										player2Color.addItem("Blue");
-										player2Color.addItem("Green");
+						player2Color.setSelectedIndex(0);
+						break;
+					case "Peach":
+						player2Color.addItem("Default");
+						player2Color.addItem("Yellow");
+						player2Color.addItem("White");
+						player2Color.addItem("Blue");
+						player2Color.addItem("Green");
 
-										player2Color.setSelectedIndex(0);
-										break;
-									case "Pichu":
-										player2Color.addItem("Default");
-										player2Color.addItem("Red");
-										player2Color.addItem("Blue");
-										player2Color.addItem("Green");
+						player2Color.setSelectedIndex(0);
+						break;
+					case "Pichu":
+						player2Color.addItem("Default");
+						player2Color.addItem("Red");
+						player2Color.addItem("Blue");
+						player2Color.addItem("Green");
 
-										player2Color.setSelectedIndex(0);
-										break;
-									case "Pikachu":
-										player2Color.addItem("Default");
-										player2Color.addItem("Red");
-										player2Color.addItem("Blue");
-										player2Color.addItem("Green");
+						player2Color.setSelectedIndex(0);
+						break;
+					case "Pikachu":
+						player2Color.addItem("Default");
+						player2Color.addItem("Red");
+						player2Color.addItem("Blue");
+						player2Color.addItem("Green");
 
-										player2Color.setSelectedIndex(0);
-										break;
-									case "Roy":
-										player2Color.addItem("Default");
-										player2Color.addItem("Red");
-										player2Color.addItem("Blue");
-										player2Color.addItem("Green");
-										player2Color.addItem("Yellow");
+						player2Color.setSelectedIndex(0);
+						break;
+					case "Roy":
+						player2Color.addItem("Default");
+						player2Color.addItem("Red");
+						player2Color.addItem("Blue");
+						player2Color.addItem("Green");
+						player2Color.addItem("Yellow");
 
-										player2Color.setSelectedIndex(0);
-										break;
-									case "Samus":
-										player2Color.addItem("Default");
-										player2Color.addItem("Pink");
-										player2Color.addItem("Black");
-										player2Color.addItem("Green");
-										player2Color.addItem("Purple");
+						player2Color.setSelectedIndex(0);
+						break;
+					case "Samus":
+						player2Color.addItem("Default");
+						player2Color.addItem("Pink");
+						player2Color.addItem("Black");
+						player2Color.addItem("Green");
+						player2Color.addItem("Purple");
 
-										player2Color.setSelectedIndex(0);
-										break;
-									case "Sheik":
-										player2Color.addItem("Default");
-										player2Color.addItem("Red");
-										player2Color.addItem("Blue");
-										player2Color.addItem("Green");
-										player2Color.addItem("White");
+						player2Color.setSelectedIndex(0);
+						break;
+					case "Sheik":
+						player2Color.addItem("Default");
+						player2Color.addItem("Red");
+						player2Color.addItem("Blue");
+						player2Color.addItem("Green");
+						player2Color.addItem("White");
 
-										player2Color.setSelectedIndex(0);
-										break;
-									case "Yoshi":
-										player2Color.addItem("Default");
-										player2Color.addItem("Red");
-										player2Color.addItem("Blue");
-										player2Color.addItem("Yellow");
-										player2Color.addItem("Pink");
-										player2Color.addItem("Cyan");
+						player2Color.setSelectedIndex(0);
+						break;
+					case "Yoshi":
+						player2Color.addItem("Default");
+						player2Color.addItem("Red");
+						player2Color.addItem("Blue");
+						player2Color.addItem("Yellow");
+						player2Color.addItem("Pink");
+						player2Color.addItem("Cyan");
 
-										player2Color.setSelectedIndex(0);
-										break;
-									case "YoungLink":
-										player2Color.addItem("Default");
-										player2Color.addItem("Red");
-										player2Color.addItem("Blue");
-										player2Color.addItem("White");
-										player2Color.addItem("Black");
+						player2Color.setSelectedIndex(0);
+						break;
+					case "YoungLink":
+						player2Color.addItem("Default");
+						player2Color.addItem("Red");
+						player2Color.addItem("Blue");
+						player2Color.addItem("White");
+						player2Color.addItem("Black");
 
-										player2Color.setSelectedIndex(0);
-										break;
-									case "Zelda":
-										player2Color.addItem("Default");
-										player2Color.addItem("Red");
-										player2Color.addItem("Blue");
-										player2Color.addItem("Green");
-										player2Color.addItem("White");
+						player2Color.setSelectedIndex(0);
+						break;
+					case "Zelda":
+						player2Color.addItem("Default");
+						player2Color.addItem("Red");
+						player2Color.addItem("Blue");
+						player2Color.addItem("Green");
+						player2Color.addItem("White");
 
-										player2Color.setSelectedIndex(0);
-										break;
-									default:
-										player2Color.addItem("--");
-										break;
-								}
-								updatePreview();
-							}
+						player2Color.setSelectedIndex(0);
+						break;
+					default:
+						player2Color.addItem("--");
+						break;
+				}
+				//updatePreview();
+			}
+		});
+		
+		player1Check.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				if ((String)player1Char.getSelectedItem() != "--" && (String)player1Color.getSelectedItem() != "--"){
+					if (!player1Name.getText().equals("")){
+						if (leftName.isEmpty()){
+							leftName = player1Name.getText();
+						}
+						else{
+							leftName = leftName + " & " + player1Name.getText();
+						}
+					}
+					leftPlayerChars.add((String)player1Char.getSelectedItem());
+					leftPlayerColors.add((String)player1Color.getSelectedItem());
+				}
+				
+				player1Name.setText("");
+				player1Char.setSelectedIndex(0);
+				player1Color.removeAllItems();
+				player1Color.addItem("--");
+				player1Color.setSelectedItem("--");
+				
+				updatePreview();
+			}
 		});
 
+		player2Check.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				if ((String)player2Char.getSelectedItem() != "--" && (String)player2Color.getSelectedItem() != "--"){
+					if (!player2Name.getText().equals("")){
+						if (rightName.isEmpty()){
+							rightName = player2Name.getText();
+						}
+						else{
+							rightName = rightName + " & " + player2Name.getText();
+						}
+					}
+					rightPlayerChars.add((String)player2Char.getSelectedItem());
+					rightPlayerColors.add((String)player2Color.getSelectedItem());
+				}
+				
+				player2Name.setText("");
+				player2Char.setSelectedIndex(0);
+				player2Color.removeAllItems();
+				player2Color.addItem("--");
+				player2Color.setSelectedItem("--");
+
+				updatePreview();				
+			}
+		});
+		
+		player1Drop.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				leftPlayerChars.remove(leftPlayerChars.size() - 1);
+				leftPlayerColors.remove(leftPlayerColors.size() - 1);
+				int lastIndex = leftName.lastIndexOf("&");
+				if (lastIndex == -1){
+					leftName = "";
+				}
+				else{
+					leftName = leftName.substring(0, lastIndex - 1);
+				}
+				
+				updatePreview();
+			}
+		});
+		
+		player2Drop.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				rightPlayerChars.remove(rightPlayerChars.size() - 1);
+				rightPlayerColors.remove(rightPlayerColors.size() - 1);
+				int lastIndex = rightName.lastIndexOf("&");
+				if (lastIndex == -1){
+					rightName = "";
+				}
+				else{
+					rightName = rightName.substring(0, lastIndex - 1);
+				}
+				
+				updatePreview();
+			}
+		});
+		
 		JButton directoryButton = new JButton("Save File As..");
 
 		JButton backgroundButton = new JButton("Change Background..");
@@ -641,7 +740,7 @@ public class ThumbnailMaker {
 			public void actionPerformed(ActionEvent e) {
 				chooser.setDialogTitle("Save Image");
 				//Fill save dialog with suggested filename.
-				File outputfiletemp = new File(player1Name.getText() + " vs. " + player2Name.getText() + ".png");
+				File outputfiletemp = new File(leftName + " vs. " + rightName + ".png");
 				chooser.setSelectedFile(outputfiletemp);
 				if (chooser.showSaveDialog(window) == JFileChooser.APPROVE_OPTION) {
 					try {
@@ -660,35 +759,35 @@ public class ThumbnailMaker {
 		});
 
 		backgroundButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						//Fill save dialog with suggested filename.
-						chooser.setDialogTitle("Select Image");
-						if (chooser.showOpenDialog(window) == JFileChooser.APPROVE_OPTION) {
-							try {
-							    //Save the image
-							    File file = chooser.getSelectedFile();
-								BufferedImage image = ImageIO.read(file);
+			public void actionPerformed(ActionEvent e) {
+				//Fill save dialog with suggested filename.
+				chooser.setDialogTitle("Select Image");
+				if (chooser.showOpenDialog(window) == JFileChooser.APPROVE_OPTION) {
+					try {
+						//Save the image
+						File file = chooser.getSelectedFile();
+						BufferedImage image = ImageIO.read(file);
 
-								int w = image.getWidth();
-        						int h = image.getHeight();
+						int w = image.getWidth();
+						int h = image.getHeight();
 
-        						if (w != 1280 || h != 720) {
-									JFrame frame = new JFrame();
-									String warning = "Error: Cannot use any image that does not have 1280x720 dimensions.";
-									JOptionPane.showMessageDialog(frame,warning,"Notice!",JOptionPane.WARNING_MESSAGE);
-								}
-								else {
-									newBackground = image;
-									updatePreview();
-								}
-							} catch (IOException q) {
-
-							}
+						if (w != 1280 || h != 720) {
+							JFrame frame = new JFrame();
+							String warning = "Error: Cannot use any image that does not have 1280x720 dimensions.";
+							JOptionPane.showMessageDialog(frame,warning,"Notice!",JOptionPane.WARNING_MESSAGE);
 						}
 						else {
-							System.out.println("No Selection");
-		     			}
+							newBackground = image;
+							updatePreview();
+						}
+					} catch (IOException q) {
+
 					}
+				}
+				else {
+					System.out.println("No Selection");
+				}
+			}
 		});
 
 
@@ -759,18 +858,26 @@ public class ThumbnailMaker {
 			Graphics2D g = fullPreview.createGraphics();
 			g.drawImage(newPreview, 0, 0, null);
 
-			BufferedImage player1Image = ImageIO.read(ThumbnailMaker.class.getResourceAsStream("/res/chars/" + player1Char.getSelectedItem().toString().toLowerCase() + "-" + player1Color.getSelectedItem().toString().toLowerCase() + ".png" ));
-			g.drawImage(player1Image, 256-(player1Image.getWidth()/2), 360-(player1Image.getHeight()/2), null);
+			for (int i = 0; i < leftPlayerChars.size(); i++){
+				BufferedImage player1Image = ImageIO.read(ThumbnailMaker.class.getResourceAsStream("/res/chars/" + leftPlayerChars.get(i).toLowerCase() + "-" + leftPlayerColors.get(i).toLowerCase() + ".png" ));
+				int width = (int)(player1Image.getWidth() / Math.pow(leftPlayerChars.size(), 0.3));
+				int height = (int)(player1Image.getHeight() / Math.pow(leftPlayerChars.size(), 0.3));
+				g.drawImage(player1Image, (i + 1) * (640 / (leftPlayerChars.size() + 1)) - width/2, 360-(height/2), width, height, null);
+			}
 
-			BufferedImage player2Image = ImageIO.read(ThumbnailMaker.class.getResourceAsStream("/res/chars/" + player2Char.getSelectedItem().toString().toLowerCase() + "-" + player2Color.getSelectedItem().toString().toLowerCase() + ".png" ));
+			for (int i = 0; i < rightPlayerChars.size(); i++){
+				BufferedImage player2Image = ImageIO.read(ThumbnailMaker.class.getResourceAsStream("/res/chars/" + rightPlayerChars.get(i).toLowerCase() + "-" + rightPlayerColors.get(i).toLowerCase() + ".png" ));
 
-			//mirror image for better look
-			AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
-			tx.translate(-player2Image.getWidth(null), 0);
-			AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-			player2Image = op.filter(player2Image, null);
+				//mirror image for better look
+				AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
+				tx.translate(-player2Image.getWidth(null), 0);
+				AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+				player2Image = op.filter(player2Image, null);
 
-			g.drawImage(player2Image, 1024-(player2Image.getWidth()/2), 360-(player2Image.getHeight()/2), null);
+				int width = (int)(player2Image.getWidth() / Math.pow(rightPlayerChars.size(), 0.3));
+				int height = (int)(player2Image.getHeight() / Math.pow(rightPlayerChars.size(), 0.3));
+				g.drawImage(player2Image, 1280 - (i + 1) * (640 / (rightPlayerChars.size() + 1)) - width/2, 360-(height/2), width, height, null);
+			}
 
 			//Add text
 			g.setFont(g.getFont().deriveFont(Font.BOLD, 60f));
@@ -779,17 +886,30 @@ public class ThumbnailMaker {
 			FontRenderContext frc = g.getFontRenderContext();
 			g.setStroke(new BasicStroke(2));
 
-			GlyphVector gv = g.getFont().createGlyphVector(frc, player1Name.getText());
-			Shape glyph = gv.getOutline(256-(float)(gv.getOutline().getBounds().getWidth()/2), 670);
-
+			GlyphVector gv = g.getFont().createGlyphVector(frc, leftName);
+			Shape glyph = gv.getOutline(256-(float)(gv.getOutline().getBounds().getWidth()/2), 670);			
+			
+			float textWidth = (float)(gv.getOutline().getBounds().getWidth()/2);
+			if (textWidth > 240f){
+				g.setFont(g.getFont().deriveFont(60f - (float)Math.sqrt(textWidth - 240f) * 2f));
+				gv = g.getFont().createGlyphVector(frc, leftName);
+				glyph = gv.getOutline(256-(float)(gv.getOutline().getBounds().getWidth()/2), 670);
+			}
 			g.setColor(Color.WHITE);
 			g.fill(glyph);
 			g.setColor(Color.BLACK);
 			g.draw(glyph);
 
-			GlyphVector gv2 = g.getFont().createGlyphVector(frc, player2Name.getText());
+			g.setFont(g.getFont().deriveFont(Font.BOLD, 60f));
+			GlyphVector gv2 = g.getFont().createGlyphVector(frc, rightName);
 			Shape glyph2 = gv2.getOutline(1024-(float)(gv2.getOutline().getBounds().getWidth()/2), 670);
 
+			float textWidth2 = (float)(gv2.getOutline().getBounds().getWidth()/2);
+			if (textWidth2 > 240f){
+				g.setFont(g.getFont().deriveFont(60f - (float)Math.sqrt(textWidth - 240f) * 2f));
+				gv2 = g.getFont().createGlyphVector(frc, rightName);
+				glyph2 = gv2.getOutline(1024-(float)(gv2.getOutline().getBounds().getWidth()/2), 670);
+			}
 			g.setColor(Color.WHITE);
 			g.fill(glyph2);
 			g.setColor(Color.BLACK);
