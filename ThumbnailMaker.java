@@ -1,5 +1,5 @@
 //Programmed by Aaron Weiss 9/2/2017
-//Edited by Daniel Beer 9/22/2017
+//Edited by Danny Beer 10/9/2017
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,6 +53,12 @@ public class ThumbnailMaker {
 	ImageIcon previewIcon;
 
 	JPanel previewPanel;
+	
+	JLabel roundLabel = new JLabel("Round:");
+	JTextField round = new JTextField(15);
+	
+	JLabel bracketLabel = new JLabel("Bracket:");
+	JTextField bracket = new JTextField(15);
 	
 	String leftName = new String("");
 	String rightName = new String("");
@@ -129,7 +135,6 @@ public class ThumbnailMaker {
 		player2Panel.add(player2Check);
 		player2Panel.add(player2Drop);
 		
-
 		/*PropertyChangeListener updateImage = new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent e) {
 				updatePreview();
@@ -161,6 +166,30 @@ public class ThumbnailMaker {
 				updatePreview();
 			  }
 		});*/
+		
+		round.getDocument().addDocumentListener(new DocumentListener() {
+			  public void changedUpdate(DocumentEvent e) {
+				updatePreview();
+			  }
+			  public void removeUpdate(DocumentEvent e) {
+				updatePreview();
+			  }
+			  public void insertUpdate(DocumentEvent e) {
+				updatePreview();
+			  }
+		});
+		
+		bracket.getDocument().addDocumentListener(new DocumentListener() {
+			  public void changedUpdate(DocumentEvent e) {
+				updatePreview();
+			  }
+			  public void removeUpdate(DocumentEvent e) {
+				updatePreview();
+			  }
+			  public void insertUpdate(DocumentEvent e) {
+				updatePreview();
+			  }
+		});
 
 		player1Char.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent e) {
@@ -733,7 +762,6 @@ public class ThumbnailMaker {
 		});
 		
 		JButton directoryButton = new JButton("Save File As..");
-
 		JButton backgroundButton = new JButton("Change Background..");
 
 		directoryButton.addActionListener(new ActionListener() {
@@ -795,15 +823,19 @@ public class ThumbnailMaker {
 
 
 		JPanel directorySubPanel = new JPanel();
-		//directorySubPanel.setLayout(new GridLayout(0,2));
+		directorySubPanel.setLayout(new GridLayout(0,2));
 		directorySubPanel.add(directoryButton);
 		directorySubPanel.add(backgroundButton);
+		directorySubPanel.add(roundLabel);
+		directorySubPanel.add(round);
+		directorySubPanel.add(bracketLabel);
+		directorySubPanel.add(bracket);
 
 		directoryPanel.add(directorySubPanel);
 
 		directoryPanel.add(player2Panel);
 
-		directoryPanel.setLayout(new GridLayout(0,3));
+		directoryPanel.setLayout(new GridLayout(1,3));
 		directoryPanel.setBorder(BorderFactory.createTitledBorder("Match Information"));
 
 		//build scene
@@ -846,7 +878,7 @@ public class ThumbnailMaker {
 	public void updatePreview() {
 
 		try {
-			BufferedImage newPreview = ImageIO.read(ThumbnailMaker.class.getResourceAsStream("/res/ss_bg.png"));
+			BufferedImage newPreview = ImageIO.read(ThumbnailMaker.class.getResourceAsStream("/res/backgrounds/ss_bg.png"));
 
 			if(newBackground != null)
 				newPreview = newBackground;
@@ -860,8 +892,8 @@ public class ThumbnailMaker {
 
 			for (int i = 0; i < leftPlayerChars.size(); i++){
 				BufferedImage player1Image = ImageIO.read(ThumbnailMaker.class.getResourceAsStream("/res/chars/" + leftPlayerChars.get(i).toLowerCase() + "-" + leftPlayerColors.get(i).toLowerCase() + ".png" ));
-				int width = (int)(player1Image.getWidth() / Math.pow(leftPlayerChars.size(), 0.3));
-				int height = (int)(player1Image.getHeight() / Math.pow(leftPlayerChars.size(), 0.3));
+				int width = (int)(player1Image.getWidth() / 1.35f / Math.pow(leftPlayerChars.size(), 0.3));
+				int height = (int)(player1Image.getHeight() / 1.35f / Math.pow(leftPlayerChars.size(), 0.3));
 				g.drawImage(player1Image, (i + 1) * (640 / (leftPlayerChars.size() + 1)) - width/2, 360-(height/2), width, height, null);
 			}
 
@@ -874,12 +906,13 @@ public class ThumbnailMaker {
 				AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
 				player2Image = op.filter(player2Image, null);
 
-				int width = (int)(player2Image.getWidth() / Math.pow(rightPlayerChars.size(), 0.3));
-				int height = (int)(player2Image.getHeight() / Math.pow(rightPlayerChars.size(), 0.3));
+				int width = (int)(player2Image.getWidth() / 1.35f / Math.pow(rightPlayerChars.size(), 0.3));
+				int height = (int)(player2Image.getHeight() / 1.35f / Math.pow(rightPlayerChars.size(), 0.3));
 				g.drawImage(player2Image, 1280 - (i + 1) * (640 / (rightPlayerChars.size() + 1)) - width/2, 360-(height/2), width, height, null);
 			}
 
 			//Add text
+			//left side
 			g.setFont(g.getFont().deriveFont(Font.BOLD, 60f));
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
@@ -900,13 +933,14 @@ public class ThumbnailMaker {
 			g.setColor(Color.BLACK);
 			g.draw(glyph);
 
+			//right side
 			g.setFont(g.getFont().deriveFont(Font.BOLD, 60f));
 			GlyphVector gv2 = g.getFont().createGlyphVector(frc, rightName);
 			Shape glyph2 = gv2.getOutline(1024-(float)(gv2.getOutline().getBounds().getWidth()/2), 670);
 
 			float textWidth2 = (float)(gv2.getOutline().getBounds().getWidth()/2);
 			if (textWidth2 > 240f){
-				g.setFont(g.getFont().deriveFont(60f - (float)Math.sqrt(textWidth - 240f) * 2f));
+				g.setFont(g.getFont().deriveFont(60f - (float)Math.sqrt(textWidth2 - 240f) * 2f));
 				gv2 = g.getFont().createGlyphVector(frc, rightName);
 				glyph2 = gv2.getOutline(1024-(float)(gv2.getOutline().getBounds().getWidth()/2), 670);
 			}
@@ -914,6 +948,36 @@ public class ThumbnailMaker {
 			g.fill(glyph2);
 			g.setColor(Color.BLACK);
 			g.draw(glyph2);
+			
+			//round
+			g.setFont(g.getFont().deriveFont(Font.BOLD, 60f));
+			GlyphVector gv3 = g.getFont().createGlyphVector(frc, round.getText());
+			Shape glyph3 = gv3.getOutline(1255 - (float)gv3.getOutline().getBounds().getWidth(), 100);
+				
+			g.setColor(Color.WHITE);
+			g.fill(glyph3);
+			g.setColor(Color.BLACK);
+			g.draw(glyph3);
+			
+			//bracket
+			g.setFont(g.getFont().deriveFont(Font.BOLD, 60f));
+			GlyphVector gv4 = g.getFont().createGlyphVector(frc, bracket.getText());
+			Shape glyph4 = gv4.getOutline(25, 100);
+				
+			g.setColor(Color.WHITE);
+			g.fill(glyph4);
+			g.setColor(Color.BLACK);
+			g.draw(glyph4);
+			
+			//VS
+			g.setFont(g.getFont().deriveFont(Font.BOLD, 140f));
+			GlyphVector gv5 = g.getFont().createGlyphVector(frc, "VS");
+			Shape glyph5 = gv5.getOutline(630 - (float)gv5.getOutline().getBounds().getWidth()/2, 360 + (float)gv5.getOutline().getBounds().getHeight()/2);
+				
+			g.setColor(Color.WHITE);
+			g.fill(glyph5);
+			g.setColor(Color.BLACK);
+			g.draw(glyph5);
 
 			previewIcon = new ImageIcon(fullPreview, "Image Preview");
 			previewIconLabel.setIcon(previewIcon);
